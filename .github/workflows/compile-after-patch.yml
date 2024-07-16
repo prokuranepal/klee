@@ -19,10 +19,13 @@ jobs:
         sudo pip3 install lit wllvm
         sudo apt-get install python3-tabulate
         pip3 install --user lit wllvm 
+        pip3 install gdown
+        gdown 'https://drive.google.com/uc?export=download&id=1Gmnj2FBfoVwx5mG4NM69gtz2WguFKY1h'
+        sudo cp libcryptominisat5.so.5.11 /lib
     - name: Install llvm 3
       run: |
         wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -      
-        sudo apt-get install clang-13 llvm-13 llvm-13-dev llvm-13-tools
+        sudo apt-get install clang-13 llvm-13 llvm-13-dev llvm-13-tools 
     - name: Install deps for STP
       run: | 
         sudo apt-get update
@@ -55,14 +58,19 @@ jobs:
         cmake --build .
         sudo cmake --install .
 
-        
+    - name: CHeck for crypto
+      run: |
+        ls -l -a /usr/local/lib
+        ls -l -a /usr/lib
+        ls -l -a /lib
 
     - name: Build klee
       run: |
         # export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+        # sudo apt install libcryptominisat5-5.8
         sudo cp stp/deps/cadical/build/libcadical.so /lib/libcadical.so
         sudo cp stp/deps/cadiback/libcadiback.so /lib/libcadiback.so 
-        
+        # sudo cp /usr/local/lib/libcryptominisat5.so.5.8 /lib/libcryptominisat5.so.5.11
         export LD_LIBRARY_PATH=/lib:$LD_LIBRARY_PATH
 
         mkdir build
@@ -70,4 +78,3 @@ jobs:
         cmake ../
         # cmake -DENABLE_UNIT_TESTS=ON -ENABLE_SYSTEM_TESTS=ON -DGTEST_SRC_DIR=~/klee/test ../
         make
-        sudo make check

@@ -78,3 +78,4 @@ jobs:
         cmake ../
         # cmake -DENABLE_UNIT_TESTS=ON -ENABLE_SYSTEM_TESTS=ON -DGTEST_SRC_DIR=~/klee/test ../
         make
+        sudo make check
